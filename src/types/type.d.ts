@@ -41,10 +41,20 @@ interface IProductReview {
 }
 
 interface IProductApiResponse {
-  skip: number;
-  limit: number;
+  skip?: number;
+  limit?: number;
   total: number;
   products: IProduct[];
 }
 
 type IRootState = ReturnType<typeof store.getState>;
+
+interface ICartItemProps {
+  item: IProduct;
+}
+
+interface IProductsFnProps {
+  skip: number;
+  search?: string;
+  sort?: string;
+}

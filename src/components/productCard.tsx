@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addToCart, removeFromCart } from "../reducer/reducer";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,16 +10,13 @@ export const ProductCard: React.FC<ICardProps> = (props) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: IRootState) => state.cart.cartItems);
 
-  const [isInCart, setIsInCart] = useState(() => {
-    const storedCartItems = JSON.parse(
-      localStorage.getItem("cartItems") || "[]"
+  const [isInCart, setIsInCart] = useState(false);
+
+  useEffect(() => {
+    setIsInCart(
+      cartItems.some((item: IProduct) => item.id === props.product.id)
     );
-    return (
-      storedCartItems.findIndex(
-        (item: IProduct) => item.id === props.product.id
-      ) !== -1
-    );
-  });
+  }, [cartItems, props.product.id]);
 
   const handleClick = (id: number) => {
     setIsInCart(!isInCart);
