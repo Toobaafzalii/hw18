@@ -29,25 +29,32 @@ export const CartModal: React.FC<ICartModalProps> = (props) => {
   }, [cartItems.length, props.onClose]);
 
   return (
-    <div className="absolute w-96 bg-white top-24 right-10 flex flex-col justify-between items-center gap-2 p-4">
-      {cartItems.length === 0 ? (
-        <p className="text-center bg-white text-gray-500">Cart is Empty</p>
-      ) : (
-        cartItems.map((item: IProduct) => (
-          <CartItem item={item} key={item.id} />
-        ))
-      )}
-      <Link to={"/CheckOut"}>
-        <button
-          className={`bg-blue-500 text-white font-bold py-2 px-4 rounded ${
-            cartItems.length === 0 ? "bg-gray-400" : " hover:bg-blue-400"
-          }`}
-          disabled={cartItems.length === 0}
-          onClick={props.onClose}
-        >
-          Checkout
-        </button>
-      </Link>
-    </div>
+    <>
+      <div className="absolute z-10 w-96 bg-white top-24 right-1 flex flex-col justify-between items-center gap-2 p-4 rounded-xl shadow-lg ">
+        {cartItems.length === 0 ? (
+          <p className="text-center bg-white text-gray-500">Cart is Empty</p>
+        ) : (
+          cartItems.map((item: IProduct, index: number) => (
+            <CartItem item={item} key={`${item.id}-${index}`} />
+          ))
+        )}
+        <Link to={"/cart"}>
+          <button
+            className={`bg-blue-500 text-white font-bold py-2 px-4 rounded ${
+              cartItems.length === 0 ? "bg-gray-400" : " hover:bg-blue-400"
+            }`}
+            disabled={cartItems.length === 0}
+            onClick={props.onClose}
+          >
+            Checkout
+          </button>
+        </Link>
+      </div>
+
+      <div
+        onClick={props.onClose}
+        className="absolute w-full h-screen left-0 top-0 bg-black bg-opacity-40 z-0"
+      />
+    </>
   );
 };

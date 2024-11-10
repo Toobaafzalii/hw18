@@ -4,7 +4,7 @@ import { configureStore } from "@reduxjs/toolkit";
 const initialState = {
   cartItems: JSON.parse(
     localStorage.getItem("cartItems") || "[]"
-  ) as IProduct[],
+  ) as ICartProduct[],
 };
 
 const cartSlice = createSlice({
@@ -27,6 +27,22 @@ const cartSlice = createSlice({
       );
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
     },
+    updateCartItem: (state, action) => {
+      const product = state.cartItems.find(
+        (item) => item.id === action.payload.id
+      );
+      console.log(product, action);
+      if (product) {
+        if (action.payload.action === "INCREASE")
+          product.quantity = product.quantity + 1;
+        if (action.payload.action === "DECREASE")
+          product.quantity = product.quantity - 1;
+      }
+      localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
+    },
+    clearCart(state) {
+      state.cartItems = [];
+    },
   },
 });
 const store = configureStore({
@@ -35,5 +51,6 @@ const store = configureStore({
   },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, updateCartItem, clearCart } =
+  cartSlice.actions;
 export default store;

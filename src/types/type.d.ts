@@ -32,6 +32,10 @@ interface IProduct {
   thumbnail: string;
 }
 
+interface ICartProduct extends IProduct {
+  quantity: number;
+}
+
 interface IProductReview {
   rating: number;
   comment: string;

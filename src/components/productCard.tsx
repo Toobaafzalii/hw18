@@ -14,7 +14,7 @@ export const ProductCard: React.FC<ICardProps> = (props) => {
 
   useEffect(() => {
     setIsInCart(
-      cartItems.some((item: IProduct) => item.id === props.product.id)
+      cartItems?.some((item: IProduct) => item.id === props.product.id)
     );
   }, [cartItems, props.product.id]);
 
@@ -26,32 +26,45 @@ export const ProductCard: React.FC<ICardProps> = (props) => {
       const updatedCart = cartItems.filter((item: IProduct) => item.id !== id);
       localStorage.setItem("cartItems", JSON.stringify(updatedCart));
     } else {
-      dispatch(addToCart(props.product));
-      const updatedCart = [...cartItems, props.product];
+      dispatch(addToCart({ ...props.product, quantity: 1 }));
+      const updatedCart = [...cartItems, { ...props.product, quantity: 1 }];
       localStorage.setItem("cartItems", JSON.stringify(updatedCart));
     }
   };
 
   return (
-    <div className="flec flex-col justify-between items-start gap-y-3 p-2 border-2 rounded-lg ">
-      <div className="w-60 h-60 overflow-hidden self-center mx-auto">
+    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-300 ease-in-out">
+      <div className="w-full h-48 overflow-hidden rounded-t-lg">
         {props.product.images && (
           <img
             src={props.product.images[0]}
             alt={props.product.title}
-            className="object-contain self-center mx-auto"
+            className="w-full h-full object-cover rounded-t-lg"
           />
         )}
       </div>
-      <p>{props.product.title}</p>
-      <p>${props.product.price}</p>
-      <p>{props.product.shippingInformation}</p>
-      <button
-        onClick={() => handleClick(props.product.id)}
-        className={`px-3 py-2 ${isInCart ? "bg-red-500" : "bg-blue-500"}`}
-      >
-        {isInCart ? "Remove from Cart" : "Add to Cart"}
-      </button>
+      <div className="flex flex-col justify-between p-4">
+        <h2
+          className="text-xl font-bold mb-2 truncate"
+          title={props.product.title}
+        >
+          {props.product.title}
+        </h2>
+        <p className="text-gray-700 mb-2">${props.product.price}</p>
+        <p className="text-gray-500 text-sm mb-4 min-h-10">
+          {props.product.shippingInformation}
+        </p>
+        <div className="min-h-12">
+          <button
+            onClick={() => handleClick(props.product.id)}
+            className={`w-full py-2 rounded-md font-semibold transition duration-300 ease-in-out hover:bg-opacity-75 ${
+              isInCart ? "bg-red-500 text-white" : "bg-blue-500 text-white"
+            }`}
+          >
+            {isInCart ? "Remove from Cart" : "Add to Cart"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

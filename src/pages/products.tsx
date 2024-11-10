@@ -4,9 +4,11 @@ import { FiltersBox } from "../components/filtersBox";
 import { CardsContainer } from "../components/cardsContainer";
 import { useMutation } from "@tanstack/react-query";
 import { fetchProducts } from "../api/product.api";
+import React from "react";
 
 const Products = () => {
   const [fetchedData, setFetchedData] = useState<IProduct[]>([]);
+  const [fastOnly, setFastOnly] = useState<boolean>(false);
   const [filters, setFilters] = useState<IProductsFnProps>({
     search: "",
     sort: "",
@@ -25,29 +27,44 @@ const Products = () => {
     });
   }, [filters]);
 
+  // useEffect(() => {
+  //   let filteredProducts = fetchedData;
+  //   if (filters.filter === "ships overnight") {
+  //     filteredProducts = products.data?.products.filter((product) => {
+  //       console.log(product.shippingInformation);
+  //       return product.shippingInformation === "Ships overnight";
+  //     });
+  //   }
+
+  //   if (filteredProducts) {
+  //     setFetchedData(filteredProducts);
+  //   }
+  // }, [products.data, filters.filter]);
+
   const handleLoadMore = () => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      skip: prevFilters.skip + 30,
+      skip: prevFilters.skip + 20,
     }));
   };
 
   return (
-    <>
+    <div className="min-h-screen">
       <NavBar
-        onSearch={(search) =>
+        onSearch={(search) => {
           setFilters((filters) => {
             return {
               ...filters,
               search,
               skip: 0,
             };
-          })
-        }
+          });
+          setFetchedData([]);
+        }}
       />
-      <section className="flex justify-between">
+      <section className="relative flex flex-col sm:flex-row justify-between">
         <FiltersBox
-          onFilter={(sort: string) => {
+          onSortChange={(sort) => {
             setFilters((filters) => {
               return {
                 ...filters,
@@ -55,24 +72,28 @@ const Products = () => {
                 skip: 0,
               };
             });
+            setFetchedData([]);
+          }}
+          onDeliveryChange={(delivery: string) => {
+            setFastOnly(delivery !== "");
           }}
         />
         <div className="container mx-auto ">
-          <CardsContainer data={fetchedData} />
+          <CardsContainer fastOnly={fastOnly} data={fetchedData} />
 
           {products.data &&
             products.data.total > products.data.products.length && (
               <button
                 onClick={handleLoadMore}
                 disabled={products.isPending}
-                className="grid w-full p-4 pb-10 mx-atou"
+                className="grid w-full p-4 pb-10 mx-atou text-xl font-medium "
               >
                 Load More
               </button>
             )}
         </div>
       </section>
-    </>
+    </div>
   );
 };
 export default Products;

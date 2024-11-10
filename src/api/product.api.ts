@@ -8,12 +8,12 @@ export const fetchProducts = async ({
 }: IProductsFnProps): Promise<IProductApiResponse> => {
   try {
     let params = "?";
-    params = params + `limit=20&skip=${skip}&`;
+    params = params + `limit=20&skip=${skip}`;
     if (search) {
-      params = params + `q=${search}&`;
+      params = params + `&q=${search}`;
     }
     if (sort) {
-      params = params + `sortBy=title&order=${sort}`;
+      params = params + `&sortBy=title&order=${sort}`;
     }
 
     const response = await api.get(`/products${params}`);
